@@ -7,6 +7,69 @@
   pointer-events: none;
 }
 
+.App{
+  background-color: #e66bc5!important;
+  background-image: url("../public/BGTEXTURE.png");
+  background-blend-mode: screen;
+  font-family:"Medium";
+}
+
+h1{
+  font-family:"Medium";
+  letter-spacing: 0.4em;
+}
+
+.navbar-pink, .dropdown-menu{
+  background-color: #e66bc5 !important;
+}
+
+.dropdown-menu{
+  border-radius: 0!important;
+}
+
+.navbar-pink a{
+  color:white !important;
+}
+
+.btn-black{
+  border-radius:0!important;
+  background-color: #343434!important;
+}
+
+.title{
+  color:white;
+}
+
+.titleDiv{
+  margin-top: 5%;
+  margin-bottom: 2.5%;
+}
+
+.titleDiv img, .titleDiv h1{
+  display:inline-block;
+}
+
+.titleDiv img{
+  margin-right:20px
+}
+
+.about{
+  color:white;
+  background-color:rgba(0, 0, 0, 0.5);
+  padding:2%;
+  margin-bottom:5%;
+  text-align: left;
+}
+
+.about a{
+  color:white;
+}
+
+.about a:hover{
+  color:#e66bc5;
+}
+
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
@@ -35,4 +98,90 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+
+@font-face {
+  font-family: "Black";   /*Can be any text*/
+  src: local("TerminaBlack"),
+    url("./fonts/Termina Black.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Medium";   /*Can be any text*/
+  src: local("TerminaMedium"),
+    url("./fonts/Termina Medium.otf") format("truetype");
+}
+
+@font-face {
+  font-family: "Light";   /*Can be any text*/
+  src: local("TerminaLight"),
+    url("./fonts/Termina Light.otf") format("truetype");
+}
+
+.footer-dark {
+  position: relative;
+  padding-top: 50px;
+  padding-right: 30px;
+  padding-bottom: 15px;
+  padding-left: 30px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-bottom-color: hsla(212.00000000000006, 38.46%, 92.35%, 1.00);
+  background-color: hsla(216, 0.00%, 0.00%, 0.20);
+}
+
+.footer-dark:small {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+.footer-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.footer-block:small {
+  align-items: center;
+}
+
+.Block:local-styles {
+  grid-column-start: span 1;
+  grid-column-end: span 1;
+  grid-row-start: span 1;
+  grid-row-end: span 1;
+}
+
+.title-small {
+  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.footer-link {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  color: #1a1b1f;
+  font-size: 14px;
+  line-height: 16px;
+  text-decoration: none;
+}
+
+.footer-link:hover {
+  color: rgba(26, 27, 31, 0.75);
+}
+
+.footer-copyright-center {
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+} 
+
+.footer-divider{
+  background-color: white;
 }
