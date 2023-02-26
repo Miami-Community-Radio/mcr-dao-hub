@@ -8,9 +8,7 @@
 }
 
 .App{
-  background-color: #e66bc5!important;
-  background-image: url("../public/BGTEXTURE.png");
-  background-blend-mode: screen;
+  background-color: #0b070a!important;
   font-family:"Medium";
 }
 
@@ -20,7 +18,7 @@ h1{
 }
 
 .navbar-pink, .dropdown-menu{
-  background-color: #e66bc5 !important;
+  background-color: #141213 !important;
 }
 
 .dropdown-menu{
@@ -40,9 +38,9 @@ h1{
   color:white;
 }
 
-.titleDiv{
+.mainDiv{
   margin-top: 5%;
-  margin-bottom: 2.5%;
+  min-height:90vh;
 }
 
 .titleDiv img, .titleDiv h1{

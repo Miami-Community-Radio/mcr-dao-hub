@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -9,9 +9,85 @@ import Nav from 'react-bootstrap/Nav';
 import Button from 'react-bootstrap/Button';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-
+import Web3 from 'web3';
+import {ethers} from 'ethers';
+import Web3Modal from 'web3modal';
+import Card from 'react-bootstrap/Card';
+import { hasRestParameter } from 'typescript';
+const providerOptions = {
+ 
+}
 
 function App() {
+  const providerUrl = process.env.ALCHEMY_PROVIDER_URL || "http://localhost/3000";
+  let [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>();
+  const [address, setAddress] = useState<any>();
+
+  const network = {
+    name: "main",
+    chainId: 137,
+    ensAddress: process.env.CONTRACT_ADDRESS
+};
+
+const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_API_KEY)
+
+  async function connectWallet(){
+    try{
+      let web3Modal = new Web3Modal({
+        cacheProvider: false
+      });
+
+      
+
+      const web3ModalInstance = await web3Modal.connect();
+      console.log(web3ModalInstance);
+
+      
+      
+      const web3ModalProvider = new ethers.providers.Web3Provider(web3ModalInstance);
+      if(web3ModalProvider){
+        setWeb3Provider(web3ModalProvider);
+      }
+      console.log(web3ModalProvider.provider);
+
+      const network = await web3ModalProvider.getNetwork();
+      console.log('Current network:', network);
+
+      getSigner();
+    }catch(error){
+        console.log(error);
+    }
+  }
+
+  const getTokens = () => {
+    if(process.env.CONTRACT_ADDRESS){
+      const contract = new ethers.Contract(
+      process.env.CONTRACT_ADDRESS,
+      //abi,
+      address
+    );
+  }
+}
+
+  const getSigner = async() => {
+    const signer = web3Provider?.getSigner();
+    if(signer){
+      const address = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      if(address){
+        console.log(address);
+        setAddress(address);
+      }
+    }
+  }
+
+  useEffect( () => {
+    if(!address){
+      getSigner();
+    }
+    if(address){
+      console.log(address);
+    }
+  }, [address, web3Provider]);
   return (
     <div className="App">
       <Navbar expand="lg" className="navbar-pink">
@@ -25,19 +101,7 @@ function App() {
             style={{ maxHeight: '100px'}}
             navbarScroll
           >
-            <Nav.Link href="#action1">VISION</Nav.Link>
-            <Nav.Link href="#action2">GALLERY</Nav.Link>
-            <Nav.Link href="#action2">CONTACT</Nav.Link>
-            <NavDropdown title="DOCS" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">RESOURCE LINK 1</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-              RESOURCE LINK 2
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-              RESOURCE LINK 3
-              </NavDropdown.Item>
-            </NavDropdown>
+            {/* <Nav.Link href="#action1">VISION</Nav.Link> */}
           </Nav>
 
           <Nav
@@ -45,91 +109,59 @@ function App() {
             style={{ maxHeight: '100px' }}
             navbarScroll
           >
-            <Button className="btn-black mr-auto" variant="dark">JOIN LEGENDARY</Button>
-          </Nav>
+          {!address &&
+            <Button className="btn-black mr-auto" variant="dark" onClick={connectWallet}>Connect Wallet</Button>
+          }
+          {address && 
+            <p className="mr-auto" style={{color:"white"}}>{address}</p>
+          }
+            </Nav>
         </Navbar.Collapse>
       </Container>
     </Navbar>
     
-    <Container className="titleDiv">
+    <Container className="mainDiv">
       <Row>
         <Col lg="2"></Col>
         <Col lg="1"><img src="logo.png" style={{width:"50px"}}></img></Col>
-        <Col lg="7"><h1 className="title">L3GENDARY DAO</h1></Col>
+        <Col lg="7"><h1 className="title">MCR DAO</h1></Col>
         <Col lg="2"></Col>
       </Row>
-    </Container>
+
+      <div style={{marginTop:"5%"}}>
+      {web3Provider && address &&
+          <p><>Addy: {address.toString()}</></p>
+      }
+    </div>
+
     <Container>
+      <h1 style={{color:"white"}}>Tokens</h1>
+      <Button style={{backgroundColor:"white"}}><a style={{ color:"black", textDecoration:"none"}} href="https://opensea.io/collection/miami-community-radio">OpenSea</a></Button>
       <Row>
-        <Col lg="2"></Col>
-        <Col lg="4" className="about">
-          <p>Decentralization has been a major foundation of queer theory since it came to fruition. Queers, who often are disenfranchised, misunderstood, repelled, and even made illegal, have been accustomed to not having a central power figure.</p>
-          <p>As we continue to challenge the status quo, we believe that the rise of every movement requires not only a flame but a spark that flickers and lights every community to action.</p>
-          <p>L3GENDARY DAO seeks to be that spark that bolsters hope for the underrepresented, creates opportunity for the marginalized and elevates the plight of the LGBTQ+ community from struggle to success. </p>
+        <Col lg="6">
+          <h3 style={{color:"white"}}>Season 1 Member</h3>  
+          <Card>
+            <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
+            <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" style={{textDecoration:"none", color:"orange"}}>Season 1 MCR Resident</a>
+          </Card>
         </Col>
-        <Col className="about" lg="4">
-          <p>We onboard queer professionals through online IRL events; by providing a welcoming Web3 learning environment, we are tapping into its largely unexplored, creative potential.</p>
-          <p>On top of this community outreach, our goal is to release products as a DAO, starting with <a target="_blank" href='https://www.raze.money/'>Raze.Money</a>; a decentralized fundraising platform that assists with the delivery of liquidity to those who need it most & awards Impact Certificate NFTs to contributors.</p>
-          <p>We are just getting started. Join us in this web 3 queer revolution, one where equality, equity and justice are all in mind and action</p>
+        <Col lg="6">
+          <h3 style={{color:"white"}}>Team</h3>  
+          <Card>
+            <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
+            <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" style={{textDecoration:"none", color:"orange"}}>MCR Team</a>
+          </Card>
         </Col>
-        <Col lg="2"></Col>
       </Row>
-      </Container>
+
+    </Container>
+    
+    </Container>
+   
       <section className="footer-dark wf-section">
      
-      <Container>
-            <div className="footer-wrapper">
-              
-                <Row>
-                  <Col lg="1"></Col>
-                  <Col lg="2">
-                    <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-brand w-inline-block">
-                      <img src="logo.png" loading="lazy" height="100" alt=""></img>
-                    </a>
-                  </Col>
-                  <Col lg="2">
-                    <div id="w-node-_827eadb8-9f58-750e-956b-8fe0e76cfedc-81bc5100" className="footer-block">
-                      <div className="title-small">L3GENDARY</div>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">MISSION</a>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">GALLERY</a>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">JOIN</a>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">CONTACT</a>
-                    </div>
-                  </Col>
-                  <Col lg="3">
-                    <div id="w-node-_827eadb8-9f58-750e-956b-8fe0e76cfee5-81bc5100" className="footer-block">
-                      <div className="title-small">DOCS</div>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">Blog post name list goes here</a>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">Blog post name list goes here</a>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">Blog post name list goes here</a>
-                    </div>
-                  </Col>
-                  <Col lg="2">
-                    <div id="w-node-_827eadb8-9f58-750e-956b-8fe0e76cfef0-81bc5100" className="footer-block">
-                      <div className="title-small">About</div>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">Terms &amp; Conditions</a>
-                      <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-link">Privacy policy</a>
-                      <div className="footer-social-block">
-                        <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-social-link w-inline-block">
-                          <img src="./Design_files/62434fa732124ac15112aad5_twitter small.svg" loading="lazy" alt=""></img>
-                        </a>
-                        <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-social-link w-inline-block">
-                          <img src="./Design_files/62434fa732124a389912aad8_linkedin small.svg" loading="lazy" alt=""></img>
-                        </a>
-                          <a href="https://legendary-e12c43-d18748dfc94ce44960060c.webflow.io/#" className="footer-social-link w-inline-block">
-                            <img src="./Design_files/62434fa732124a51bf12aae9_facebook small.svg" loading="lazy" alt=""></img>
-                          </a>
-                        </div>
-                    </div>
-                  </Col>
-                  <Col lg="1"></Col>
-                </Row>
-             
-          </div>
-          </Container>
-          
         <div className="footer-divider"><hr></hr></div>
-        <div className="footer-copyright-center">Copyright © 2022 L3GENDARY DAO</div>
+        <div className="footer-copyright-center">Copyright © 2023 MCR DAO</div>
         
       </section>
     </div>
