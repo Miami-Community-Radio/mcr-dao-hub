@@ -22,7 +22,11 @@ function App() {
   const providerUrl = process.env.ALCHEMY_PROVIDER_URL || "http://localhost/3000";
   let [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>();
   const [address, setAddress] = useState<any>();
-
+  const [memberTokensInCirculation, setMemberTokensInCirculation] = useState();
+  const [teamTokensInCirculation, setTeamTokensInCirculation] = useState();
+  const [currentSeason, setCurrentSeason] = useState();
+  const [nextSeason, setNextSeason] = useState();
+  
   const network = {
     name: "main",
     chainId: 137,
@@ -69,6 +73,57 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEM
   }
 }
 
+const getResidentTokensInCirculation = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+const getCommemorativeTokensInCirculation = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+const getTeamTokensInCirculation = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+const getCurrentSeason = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+
+const getExpireDate = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
   const getSigner = async() => {
     const signer = web3Provider?.getSigner();
     if(signer){
@@ -88,6 +143,8 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEM
       console.log(address);
     }
   }, [address, web3Provider]);
+
+  
   return (
     <div className="App">
       <Navbar expand="lg" className="navbar-pink">
@@ -139,9 +196,12 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEM
       <Button style={{backgroundColor:"white"}}><a style={{ color:"black", textDecoration:"none"}} href="https://opensea.io/collection/miami-community-radio">OpenSea</a></Button>
       <Row>
         <Col lg="6">
+          {currentSeason && <h2>Current Season:{currentSeason}</h2>}
+          {nextSeason && <h2>Next Season Start Date:{nextSeason}</h2>}
           <h3 style={{color:"white"}}>Season 1 Member</h3>  
           <Card>
             <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
+            {memberTokensInCirculation && <p>Tokens In Circulation: {memberTokensInCirculation}</p>}
             <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" style={{textDecoration:"none", color:"orange"}}>Season 1 MCR Resident</a>
           </Card>
         </Col>
@@ -149,6 +209,7 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEM
           <h3 style={{color:"white"}}>Team</h3>  
           <Card>
             <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
+            {teamTokensInCirculation && <p>Tokens In Circulation: {teamTokensInCirculation}</p>}
             <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" style={{textDecoration:"none", color:"orange"}}>MCR Team</a>
           </Card>
         </Col>
