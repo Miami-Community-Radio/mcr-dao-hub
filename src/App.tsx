@@ -114,7 +114,7 @@ const getCurrentSeason = () => {
 }
 
 
-const getExpireDate = () => {
+const mintSeason = () => {
   if(process.env.CONTRACT_ADDRESS){
     const contract = new ethers.Contract(
     process.env.CONTRACT_ADDRESS,
@@ -123,6 +123,47 @@ const getExpireDate = () => {
   );
 }
 }
+
+const mintTeamTokens = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+const mintCommemorativeTokens = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+const performUpKeep = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
+const setTokenUri = () => {
+  if(process.env.CONTRACT_ADDRESS){
+    const contract = new ethers.Contract(
+    process.env.CONTRACT_ADDRESS,
+    //abi,
+    address
+  );
+}
+}
+
 
   const getSigner = async() => {
     const signer = web3Provider?.getSigner();
