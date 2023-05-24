@@ -137,6 +137,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
      setMessage('Season burnt and new season started!');
     }catch(error) {
       console.error(error);
+      setAlert(error);
     }
   }
 
@@ -146,6 +147,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
     setMessage(res);
     }catch(error) {
       console.error(error);
+      setAlert(error);
     }
   }
 
