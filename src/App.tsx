@@ -38,7 +38,7 @@ function App() {
   const network = {
     name: "main",
     chainId: 137,
-    ensAddress: process.env.CONTRACT_ADDRESS
+    ensAddress: "0x7021f99161e24d42712a6a572ab7315c8da190f2"
 };
 
 const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_API_KEY)
@@ -66,7 +66,6 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
       const network = await web3ModalProvider.getNetwork();
       console.log('Current network:', network);
 
-      setSigner(web3ModalProvider.getSigner());
     }catch(error){
         console.log(error);
     }
@@ -135,7 +134,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const performUpKeep = async() => {
     try{
      var res = await contract.performUpkeep([]);
-     return res;
+     setMessage('Season burnt and new season started!');
     }catch(error) {
       console.error(error);
     }
@@ -144,7 +143,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const setTokenUri = async() => {
     try{
     var res = await contract.setTokenUri(tokenId, tokenUriInput);
-    return res;
+    setMessage(res);
     }catch(error) {
       console.error(error);
     }
@@ -159,6 +158,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
         //console.log(address);
         setAddress(address);
       }
+      setSigner(signer);
     }
   }
 
