@@ -42,7 +42,7 @@ function App() {
 };
 
 const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_API_KEY)
-const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, web3Provider);
+const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, signer);
 
   async function connectWallet(){
     try{
@@ -66,7 +66,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
       const network = await web3ModalProvider.getNetwork();
       console.log('Current network:', network);
 
-      getSigner();
+      setSigner(web3ModalProvider.getSigner());
     }catch(error){
         console.log(error);
     }
@@ -134,7 +134,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
 
   const performUpKeep = async() => {
     try{
-     var res = await contract.performUpkeep([]).call();
+     var res = await contract.performUpkeep([]);
      return res;
     }catch(error) {
       console.error(error);
