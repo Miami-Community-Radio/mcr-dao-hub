@@ -101,7 +101,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const mintSeason = async() => {
     try{
       getSigner();
-      var res = await contract.mintSeason(address, 50, []);
+      var res = await contract.mintSeason(address, 50, [], {gasLimit: 5000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -125,7 +125,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const mintCommemorativeTokens = async() => {
     try{
       getSigner();
-      var res = await contract.mintSeason(address, 50, []);
+      var res = await contract.mintSeason(address, 50, [], {gasLimit: 5000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -137,7 +137,9 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const performUpKeep = async() => {
     try{
       getSigner();
-     var res = await contract.performUpkeep([]);
+      var tx = await contract.performUpkeep([], {gasLimit: 5000000});
+      await tx.wait();
+
      setMessage('Season burnt and new season started!');
     }catch(error) {
       console.error(error);
@@ -148,7 +150,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const setTokenUri = async() => {
     try{
       getSigner();
-    var res = await contract.setTokenUri(tokenId, tokenUriInput);
+    var res = await contract.setTokenUri(tokenId, tokenUriInput, {gasLimit: 5000000});
     setMessage(res);
     }catch(error) {
       console.error(error);
@@ -169,6 +171,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
     }
   }
 
+  
   const getContractURI = async() => {
    return await contract.contractURI();
   }
