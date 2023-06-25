@@ -113,7 +113,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   const mintTeamTokens = async() => {
     try{
       getSigner();
-      var res = await contract.mintSeason(address, 25, []);
+      var res = await contract.mintSeason(address, 25, [], {gasLimit: 5000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
