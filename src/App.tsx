@@ -134,6 +134,8 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
     }
   }
 
+
+
   const performUpKeep = async() => {
     try{
       getSigner();
@@ -275,9 +277,9 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
         <Container style={{color:"white"}}>
           <h2>Contract Functions</h2>
           
-          <Button onClick={performUpKeep} style={{marginRight:"2%", backgroundColor:"red", borderColor:"red"}}>Burn Season</Button>
-          <Button onClick={mintSeason}  style={{marginRight:"2%"}}>Mint Season</Button>
-          <Button onClick={mintCommemorativeTokens} style={{marginRight:"2%"}}>Mint Commemorative Tokens</Button>
+            <Button onClick={performUpKeep} style={{marginRight:"2%", backgroundColor:"red", borderColor:"red"}}>Burn Season</Button>
+            <Button onClick={mintSeason}  style={{marginRight:"2%"}}>Mint Season</Button>
+            <Button onClick={mintCommemorativeTokens} style={{marginRight:"2%"}}>Mint Commemorative Tokens</Button>
 
           <h1 style={{marginTop:"5%"}}>Set Token Metadata</h1>
           <p>Token Ids: 0(Team), 1(Resident), 2,3,4,5,6,7,8...(Commemorative)</p>
