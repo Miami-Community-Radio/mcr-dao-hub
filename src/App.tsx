@@ -18,11 +18,12 @@ import { hasRestParameter, setCommentRange } from 'typescript';
 import {Text, Input} from "@mantine/core";
 import { walletconnect } from 'web3modal/dist/providers/connectors';
 import abi from './abi.json';
-
+import dotenv from  'dotenv'
 import { Field, Form, Formik } from "formik";
 
 function App() {
-  const providerUrl = process.env.ALCHEMY_PROVIDER_URL || "http://localhost/3000";
+  const providerUrl = process.env.REACT_APP_ALCHEMY_PROVIDER_URL || "http://localhost/3000";
+  const provider = new ethers.providers.JsonRpcProvider("https://polygon-rpc.com/");
   let [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>();
   const [alert, setAlert] = useState<any>();
   const [message, setMessage] = useState<any>();
@@ -41,27 +42,41 @@ function App() {
     ensAddress: "0x7021f99161e24d42712a6a572ab7315c8da190f2"
 };
 
-const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.ALCHEMY_API_KEY)
-const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, signer);
+const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_APP_ALCHEMY_API_KEY)
+const contractWrite = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, signer);
+const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, provider);
 
   async function connectWallet(){
     try{
-      let web3Modal = new Web3Modal({
-        cacheProvider: false
-      });
+      const providerOptions = {
+        options: {
+          package: null,
+          alchemy: process.env.REACT_APP_ALCHEMY_API_KEY,
+          infuraId: process.env.REACT_APP_INFURA_ID // required
+        }
+      };
 
-      
+      let web3Modal = new Web3Modal({
+        network: "mainnet",
+        cacheProvider: true,
+        providerOptions
+      });
 
       const web3ModalInstance = await web3Modal.connect();
       console.log(web3ModalInstance);
-
-      
       
       const web3ModalProvider = new ethers.providers.Web3Provider(web3ModalInstance);
       if(web3ModalProvider){
         setWeb3Provider(web3ModalProvider);
       }
       console.log(web3ModalProvider.provider);
+      setSigner(web3ModalProvider.getSigner());
+
+      const address = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      if(address){
+        //console.log(address);
+        setAddress(address);
+      }
 
       const network = await web3ModalProvider.getNetwork();
       console.log('Current network:', network);
@@ -72,36 +87,41 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
   }
 
 
+  //read contract
+
   const getResidentTokensInCirculation = async () => {
     //console.log('get team tokens');
-    var response = await contract.residentTokensInCirculation();
+    var response = await contractRead.residentTokensInCirculation();
    // console.log(response);
     setResidentTokensInCirculation(response);
   }
 
   const getCrewTokensInCirculation = async () => {
     //console.log('get crew tokens in circulation');
-    var response = await contract.commemorativeTokensInCirculation();
+    var response = await contractRead.commemorativeTokensInCirculation();
     //console.log(response);
     setCrewTokensInCirculation(response);
   }
 
   const getTeamTokensInCirculation = async () => {
     // console.log('get team tokens');
-    var response = await contract.teamTokensInCirculation();
+    var response = await contractRead.teamTokensInCirculation();
     //console.log(response);
     setTeamTokensInCirculation(response);
   }
 
   const getCurrentSeason = async() => {
-      var res = await contract.currentSeason();
+      var res = await contractRead.currentSeason();
       setCurrentSeason(res.toString());
   }
+
+
+  //write contract
 
   const mintSeason = async() => {
     try{
       getSigner();
-      var res = await contract.mintSeason(address, 50, [], {gasLimit: 5000000});
+      var res = await contractWrite.mintSeason(address, 50, [], {gasLimit: 5000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -112,8 +132,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
 
   const mintTeamTokens = async() => {
     try{
-      getSigner();
-      var res = await contract.mintSeason(address, 25, [], {gasLimit: 5000000});
+      var res = await contractWrite.mintSeason(address, 25, [], {gasLimit: 5000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -124,8 +143,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
 
   const mintCommemorativeTokens = async() => {
     try{
-      getSigner();
-      var res = await contract.mintSeason(address, 50, [], {gasLimit: 5000000});
+      var res = await contractWrite.mintSeason(address, 50, [], {gasLimit: 5000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -134,12 +152,9 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
     }
   }
 
-
-
   const performUpKeep = async() => {
     try{
-      getSigner();
-      var tx = await contract.performUpkeep([], {gasLimit: 5000000});
+      var tx = await contractWrite.performUpkeep([], {gasLimit: 5000000});
       await tx.wait();
 
      setMessage('Season burnt and new season started!');
@@ -151,8 +166,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
 
   const setTokenUri = async() => {
     try{
-      getSigner();
-    var res = await contract.setTokenUri(tokenId, tokenUriInput, {gasLimit: 5000000});
+    var res = await contractWrite.setTokenUri(tokenId, tokenUriInput, {gasLimit: 5000000});
     setMessage(res);
     }catch(error) {
       console.error(error);
@@ -162,29 +176,34 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
 
 
   const getSigner = async() => {
-    const signer = web3Provider?.getSigner();
-    if(signer){
-      const address = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      if(address){
-        //console.log(address);
-        setAddress(address);
+    if(address){
+      const signer = web3Provider?.getSigner(address.toString());
+      if(signer){
+        const address = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if(address){
+          //console.log(address);
+          setAddress(address);
+        }
+        setSigner(signer);
       }
-      setSigner(signer);
+    }else{
+      //window.alert('Not signed in.')
     }
   }
 
   
   const getContractURI = async() => {
-   return await contract.contractURI();
+   return await contractRead.contractURI();
   }
 
 
   useEffect( () => {
-    if(!signer){
-      getSigner();
-    }
-    if(address){
-      //console.log(address);
+    // if(address && !signer){
+    //   getSigner();
+    // }
+
+    if(!address){
+      console.log('no address');
     }
 
     if(!teamTokensInCirculation){
@@ -224,7 +243,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
             navbarScroll
           >
           {!address &&
-            <Button className="btn-black mr-auto" variant="dark" onClick={connectWallet}>Connect Wallet</Button>
+            <Button className="btn btn-dark mr-auto" variant="dark" onClick={connectWallet}>Connect Wallet</Button>
           }
           {address && 
             <p className="mr-auto" style={{color:"white"}}>{address}</p>
@@ -243,7 +262,7 @@ const contract = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2
       </Row>
 
       <div style={{marginTop:"5%"}}>
-      {web3Provider && address &&
+      {address &&
           <p style={{color:"white"}}><>Addy: {address.toString()}</></p>
       }
     </div>
