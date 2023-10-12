@@ -34,13 +34,14 @@ function App() {
   const [currentSeason, setCurrentSeason]= useState<any>();
   const [nextSeason, setNextSeason]= useState<any>();
   const [signer, setSigner]= useState<any>();
+  const [network, setNetwork]= useState<any>();
   const [tokenId, setTokenId] = useState<any>();
   const [tokenUriInput, setTokenUriInput] = useState<any>();
-  const network = {
-    name: "main",
-    chainId: 137,
-    ensAddress: "0x7021f99161e24d42712a6a572ab7315c8da190f2"
-};
+//   const network = {
+//     name: "main",
+//     chainId: 137,
+//     ensAddress: "0x7021f99161e24d42712a6a572ab7315c8da190f2"
+// };
 
 const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_APP_ALCHEMY_API_KEY)
 const contractWrite = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, signer);
@@ -79,6 +80,7 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
       }
 
       const network = await web3ModalProvider.getNetwork();
+      setNetwork(network);
       console.log('Current network:', network);
 
     }catch(error){
@@ -246,7 +248,7 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
             <Button className="btn btn-dark mr-auto" variant="dark" onClick={connectWallet}>Connect Wallet</Button>
           }
           {address && 
-            <p className="mr-auto" style={{color:"white"}}>{address}</p>
+            <p className="mr-auto" style={{color:"white", marginTop:"20px"}}>{address}</p>
           }
             </Nav>
         </Navbar.Collapse>
@@ -262,31 +264,39 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
       </Row>
 
       <div style={{marginTop:"5%"}}>
+        {
+          network &&
+            <p style={{color:"white"}}>Network: {network.name}</p>
+        }
       {address &&
-          <p style={{color:"white"}}><>Addy: {address.toString()}</></p>
+          <p style={{color:"white"}}><>Wallet Addy: {address.toString()}</></p>
       }
     </div>
 
     <Container>
       <h1 style={{color:"white"}}>Tokens</h1>
-      <Button style={{backgroundColor:"white"}}><a style={{ color:"black", textDecoration:"none"}} href="https://opensea.io/collection/miami-community-radio">OpenSea</a></Button>
+      {/* <Button style={{backgroundColor:"white"}}><a style={{ color:"black", textDecoration:"none"}} href="https://opensea.io/collection/miami-community-radio">OpenSea</a></Button> */}
       <Row>
         <Col lg="6">
           {nextSeason && <h2>Next Season Start Date:{nextSeason}</h2>}
           <h3 style={{color:"white"}}>Season 1 Member</h3>  
           <Card>
-            <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
-            {residentTokensInCirculation && <p style={{color:"black"}}>Tokens In Circulation: {residentTokensInCirculation.toString()}</p>}
-            <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" style={{textDecoration:"none", color:"orange"}}>Season 1 MCR Resident</a>
+           <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0"  target="_blank" style={{textDecoration:"none", color:"orange"}}>
+              <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
+              {residentTokensInCirculation && <p style={{color:"black"}}>Tokens In Circulation: {residentTokensInCirculation.toString()}</p>}
+            <p>Season 1 MCR Resident</p>
+           </a>
           </Card>
 
         </Col>
         <Col lg="6">
           <h3 style={{color:"white"}}>Team</h3>  
           <Card>
-            <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
-            {teamTokensInCirculation && <p style={{color:"black"}}>Tokens In Circulation: {teamTokensInCirculation.toString()}</p>}
-            <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" style={{textDecoration:"none", color:"orange"}}>MCR Team</a>
+            <a href="https://opensea.io/assets/matic/0x7021f99161e24d42712a6a572ab7315c8da190f2/0" target="_blank" style={{textDecoration:"none", color:"orange"}}>
+              <img src="https://i.seadn.io/gcs/files/08d64386d2e2f6f54cfcfff2070681a6.png?auto=format&w=1920" style={{width:"300px", margin: "0 auto"}}></img>
+              {teamTokensInCirculation && <p style={{color:"black"}}>Tokens In Circulation: {teamTokensInCirculation.toString()}</p>}
+              <p>MCR Team</p>
+            </a>
           </Card>
         </Col>
       </Row>
