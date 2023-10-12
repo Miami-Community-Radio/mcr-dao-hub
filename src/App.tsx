@@ -25,6 +25,8 @@ function App() {
   const providerUrl = process.env.REACT_APP_ALCHEMY_PROVIDER_URL || "http://localhost/3000";
   const provider = new ethers.providers.JsonRpcProvider("https://polygon-rpc.com/");
   let [web3Provider, setWeb3Provider] = useState<ethers.providers.Web3Provider>();
+  const [contractWrite, setContractWrite] = useState<any>();
+  const [contractRead, setContractRead] = useState<any>();
   const [alert, setAlert] = useState<any>();
   const [message, setMessage] = useState<any>();
   const [address, setAddress] = useState<any>();
@@ -44,8 +46,6 @@ function App() {
 // };
 
 const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_APP_ALCHEMY_API_KEY)
-const contractWrite = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, signer);
-const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, provider);
 
   async function connectWallet(){
     try{
@@ -70,8 +70,11 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
       if(web3ModalProvider){
         setWeb3Provider(web3ModalProvider);
       }
-      console.log(web3ModalProvider.provider);
+      //console.log(web3ModalProvider.provider);
       setSigner(web3ModalProvider.getSigner());
+
+      setContractWrite(new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, web3ModalProvider.getSigner()));
+      setContractRead(new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, web3ModalProvider));
 
       const address = await window.ethereum.request({ method: 'eth_requestAccounts' });
       if(address){
@@ -156,6 +159,7 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
 
   const performUpKeep = async() => {
     try{
+      contractWrite.connect(signer);
       var tx = await contractWrite.performUpkeep([], {gasLimit: 5000000});
       await tx.wait();
 
@@ -204,8 +208,8 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
     //   getSigner();
     // }
 
-    if(!address){
-      console.log('no address');
+    if(signer){
+      console.log(signer);
     }
 
     if(!teamTokensInCirculation){
@@ -354,7 +358,7 @@ const contractRead = new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da1
                 </Form>
                 )}
             </Formik>
-          {alert && <p style={{color:"red"}}>{alert} </p>}
+          {alert && <div style={{marginTop:"20px"}}><p className="alert alert-danger m-auto" style={{width:"50%"}} >{alert} </p></div>}
           {message && <p style={{color:"green"}}>{message} </p>}
         </Container>
       }
