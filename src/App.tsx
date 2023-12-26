@@ -73,8 +73,8 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_
       //console.log(web3ModalProvider.provider);
       setSigner(web3ModalProvider.getSigner());
 
-      setContractWrite(new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, web3ModalProvider.getSigner()));
-      setContractRead(new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi, web3ModalProvider));
+      setContractWrite(new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi as ethers.ContractInterface, web3ModalProvider.getSigner()));
+      setContractRead(new ethers.Contract("0x7021f99161e24d42712a6a572ab7315c8da190f2", abi as ethers.ContractInterface, web3ModalProvider));
 
       const address = await window.ethereum.request({ method: 'eth_requestAccounts' });
       if(address){
@@ -137,7 +137,7 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_
 
   const mintTeamTokens = async() => {
     try{
-      var res = await contractWrite.mintSeason(address, 25, [], {gasLimit: 5000000});
+      var res = await contractWrite.mintSeason(address, 25, [], {gasLimit: 20000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -148,7 +148,7 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_
 
   const mintCommemorativeTokens = async() => {
     try{
-      var res = await contractWrite.mintSeason(address, 50, [], {gasLimit: 5000000});
+      var res = await contractWrite.mintSeason(address, 50, [], {gasLimit: 20000000});
       console.log(res);
       setMessage(res);
     }catch(error) {
@@ -160,10 +160,16 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_
   const performUpKeep = async() => {
     try{
       contractWrite.connect(signer);
-      var tx = await contractWrite.performUpkeep([], {gasLimit: 5000000});
-      await tx.wait();
+      var tx = await contractWrite.performUpkeep([], {gasLimit: 20000000});
+      console.log(tx);
 
-     setMessage('Season burnt and new season started!');
+      console.log('Transaction hash:', tx.hash);
+
+      // Wait for the transaction to be mined
+      const receipt = await tx.wait();
+      console.log('Transaction mined:', receipt);
+     
+      setMessage('Season burnt and new season started!');
     }catch(error) {
       console.error(error);
       setAlert('error, see console');
@@ -172,8 +178,9 @@ const alchemy = new ethers.providers.AlchemyProvider('matic', process.env.REACT_
 
   const setTokenUri = async() => {
     try{
-    var res = await contractWrite.setTokenUri(tokenId, tokenUriInput, {gasLimit: 5000000});
+    var res = await contractWrite.setTokenUri(tokenId, tokenUriInput, {gasLimit: 20000000});
     setMessage(res);
+    
     }catch(error) {
       console.error(error);
       setAlert('error, see console');
